@@ -1,5 +1,7 @@
 # Record3D-Unity bridging library
 
+**2020/09/17 Update**: Introduced LiDAR support
+
 This library connects [Record3D](https://record3d.app)'s live-streaming library [`record3d_cpp`](https://github.com/marek-simonik/record3d) with [Unity demo project](https://github.com/marek-simonik/record3d_unity_demo). The goal of this library is to transform stream of RGBD video into Point Clouds that can be fed into Unity VFX Graph as attribute maps (textures).
 
 ### Building on Windows (pre-built libs included)

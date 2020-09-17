@@ -15,6 +15,11 @@ include_directories(include)
 
 include(GNUInstallDirs)
 add_library(record3d_unity_streaming SHARED Record3DUnityStreaming.cpp)
+
+if (APPLE)
+target_link_directories(record3d_unity_streaming PUBLIC /usr/local/lib)
+endif()
+
 target_link_libraries(record3d_unity_streaming record3d_cpp lzfse usbmuxd plist)
 install(TARGETS record3d_unity_streaming EXPORT Record3DUnityStreamingConfig
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}

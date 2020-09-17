@@ -8,8 +8,8 @@
 FrameMetadata GetFrameMetadata()
 {
 	FrameMetadata fmd;
-	fmd.width = static_cast<int32_t>(Record3D::Record3DStream::FRAME_WIDTH);
-	fmd.height = static_cast<int32_t>(Record3D::Record3DStream::FRAME_HEIGHT);
+	fmd.width = static_cast<int32_t>(Record3D::Record3DStream::MAXIMUM_FRAME_WIDTH);
+	fmd.height = static_cast<int32_t>(Record3D::Record3DStream::MAXIMUM_FRAME_HEIGHT);
 	fmd.numComponentsPerPositionTexturePixel = 4;
 	fmd.numComponentsPerColorTexturePixel = 3;
 
@@ -44,8 +44,8 @@ void FinishDeviceInfoHandling(DeviceHandlesInfo $devInfo)
 bool StartStreaming(Record3DDevice $deviceHandle, OnNewFrameCallback $newFrameCallback, OnStreamStoppedCallback $streamStoppedCallback)
 {
     auto* stream = new Record3D::Record3DStream{};
-    constexpr int texWidth = Record3D::Record3DStream::FRAME_WIDTH;
-    constexpr int texHeight = Record3D::Record3DStream::FRAME_HEIGHT;
+    constexpr int texWidth = Record3D::Record3DStream::MAXIMUM_FRAME_WIDTH;
+    constexpr int texHeight = Record3D::Record3DStream::MAXIMUM_FRAME_HEIGHT;
     constexpr int numComponentsPerPointPosition = 4;
     int vertexPositionsBuffLength = texWidth * texHeight * numComponentsPerPointPosition;
 
@@ -62,10 +62,10 @@ bool StartStreaming(Record3DDevice $deviceHandle, OnNewFrameCallback $newFrameCa
         float itx = -$K.tx / $K.fx;
         float ity = -$K.ty / $K.fy;
 
-        for (int i = 0; i < texHeight; i++)
-            for ( int j = 0; j < texWidth; j++ )
+        for (int i = 0; i < $frameHeight; i++)
+            for ( int j = 0; j < $frameWidth; j++ )
             {
-                int idx = texWidth * i + j;
+                int idx = $frameWidth * i + j;
                 int posBuffIdx = numComponentsPerPointPosition * idx;
                 const float currDepth = ((float*)$depthFrame.data())[ idx ];
 
@@ -75,11 +75,12 @@ bool StartStreaming(Record3DDevice $deviceHandle, OnNewFrameCallback $newFrameCa
                 positionsBuffer[ posBuffIdx + 3 ] = idx;
             }
 
+        constexpr int numRGBChannels = 3;
 		FrameInfo conf;
 		conf.depthFrameBufferPtr = (void*)positionsBuffer;
 		conf.rgbFrameBufferPtr = (void*)$rgbFrame.data();
-		conf.depthFrameBufferSize = static_cast<int32_t>(vertexPositionsBuffLength * sizeof(float));
-		conf.rgbFrameBufferSize = static_cast<int32_t>($rgbFrame.size());
+		conf.depthFrameBufferSize = static_cast<int32_t>($frameWidth * $frameHeight * sizeof(float));
+		conf.rgbFrameBufferSize = static_cast<int32_t>($frameWidth * $frameHeight * numRGBChannels * sizeof(uint8_t));
 		conf.frameWidth = static_cast<int32_t>($frameWidth);
 		conf.frameHeight = static_cast<int32_t>($frameHeight);
 
