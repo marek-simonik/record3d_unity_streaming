@@ -9,7 +9,7 @@ Building on Windows is quite cumbersome, which is why I am including pre-built l
 
 ##### Pre-built library (the recommended, pain-free way)
 
-The library consists the following file, which you can download: [`record3d_unity_streaming.dll`](https://github.com/marek-simonik/record3d_unity_streaming/releases/download/v1.0.0/record3d_unity_streaming.dll). You will need to make sure it is in `PATH`. The easiest way is to copy the file into `C:\Windows\System32` and/or `C:\Windows\SysWOW64`. Alternatively, you can add the the folder containing the `.dll` into `PATH`.
+The library consists the following file, which you can download: [`record3d_unity_streaming.dll`](https://github.com/marek-simonik/record3d_unity_streaming/releases/download/v1.2.0/record3d_unity_streaming.dll). You will need to make sure it is in `PATH`. The easiest way is to copy the file into `C:\Windows\System32` and/or `C:\Windows\SysWOW64`. Alternatively, you can add the the folder containing the `.dll` into `PATH`.
 
 ##### Building the library yourself (the hard way)
 
@@ -61,7 +61,7 @@ You can now open the [Unity demo project](https://github.com/marek-simonik/recor
 #### Building on macOS/Linux
 
 ##### Pre-built library for macOS
-Similar to Windows, only one `dylib` file is needed: [`librecord3d_unity_streaming.dylib`](https://github.com/marek-simonik/record3d_unity_streaming/releases/download/v1.0.0/librecord3d_unity_streaming.dylib). Make sure it is in `PATH` — the easiest way is to copy the file into `/usr/lib/`.
+Similar to Windows, only one `dylib` file is needed: [`librecord3d_unity_streaming.dylib`](https://github.com/marek-simonik/record3d_unity_streaming/releases/download/v1.2.0/librecord3d_unity_streaming.dylib). Copy the `.dylib` file into `/usr/local/lib/`.
 
 
 ##### Building the library yourself
@@ -87,4 +87,4 @@ Before building, **make sure you have installed CMake >=3.13** (this is crucial)
 		make -j8
 		sudo make install
 
-If the installation of both libraries was successfull, you can run [the Unity demo project](https://github.com/marek-simonik/record3d_unity_demo).
+If the installation of both libraries was successful, you can run [the Unity demo project](https://github.com/marek-simonik/record3d_unity_demo).
