@@ -8,8 +8,6 @@
 FrameMetadata GetFrameMetadata()
 {
 	FrameMetadata fmd;
-	fmd.width = static_cast<int32_t>(Record3D::Record3DStream::MAXIMUM_FRAME_WIDTH);
-	fmd.height = static_cast<int32_t>(Record3D::Record3DStream::MAXIMUM_FRAME_HEIGHT);
 	fmd.numComponentsPerPositionTexturePixel = 4;
 	fmd.numComponentsPerColorTexturePixel = 3;
 
@@ -40,34 +38,75 @@ void FinishDeviceInfoHandling(DeviceHandlesInfo $devInfo)
     free($devInfo.arr_ptr);
 }
 
+static float InterpolateDepth(const float* $depthData, float $x, float $y, int $imgWidth, int $imgHeight)
+{
+    int wX = static_cast<int>($x);
+    int wY = static_cast<int>($y);
+    float fracX = $x - static_cast<float>(wX);
+    float fracY = $y - static_cast<float>(wY);
+
+    int topLeftIdx = wY * $imgWidth + wX;
+    int topRightIdx = wY * $imgWidth + std::min(wX, $imgWidth - 1);
+    int bottomLeftIdx = std::min(wY, $imgHeight - 1) * $imgWidth + wX;
+    int bottomRightIdx = std::min(wY, $imgHeight - 1) * $imgWidth + std::min(wX, $imgWidth - 1);
+
+    float interpVal =
+        ($depthData[topLeftIdx]    * (1.0f - fracX) + fracX * $depthData[topRightIdx])    * (1.0f - fracY) +
+        ($depthData[bottomLeftIdx] * (1.0f - fracX) + fracX * $depthData[bottomRightIdx]) * fracY;
+
+    return interpVal;
+}
 
 bool StartStreaming(Record3DDevice $deviceHandle, OnNewFrameCallback $newFrameCallback, OnStreamStoppedCallback $streamStoppedCallback)
 {
     auto* stream = new Record3D::Record3DStream{};
-    constexpr int texWidth = Record3D::Record3DStream::MAXIMUM_FRAME_WIDTH;
-    constexpr int texHeight = Record3D::Record3DStream::MAXIMUM_FRAME_HEIGHT;
     constexpr int numComponentsPerPointPosition = 4;
-    int vertexPositionsBuffLength = texWidth * texHeight * numComponentsPerPointPosition;
 
-    auto* positionsBuffer = new float[vertexPositionsBuffLength];
+    size_t positionsBufferSize = 0;
+    float* positionsBuffer = nullptr;
 
     stream->onNewFrame = [=](const Record3D::BufferRGB &$rgbFrame,
                              const Record3D::BufferDepth &$depthFrame,
-                             uint32_t $frameWidth,
-                             uint32_t $frameHeight,
-                             Record3D::IntrinsicMatrixCoeffs $K)
+                             uint32_t $rgbWidth,
+                             uint32_t $rgbHeight,
+                             uint32_t $depthWidth,
+                             uint32_t $depthHeight,
+                             Record3D::DeviceType $deviceType,
+                             Record3D::IntrinsicMatrixCoeffs $K) mutable
     {
+        size_t currPositionsBufferSize = $rgbWidth * $rgbHeight * numComponentsPerPointPosition;
+        if ( positionsBufferSize < currPositionsBufferSize )
+        {
+            if ( positionsBuffer != nullptr )
+            {
+                delete[] positionsBuffer;
+            }
+
+            positionsBuffer = new float[currPositionsBufferSize];
+
+            positionsBufferSize = currPositionsBufferSize;
+        }
+
         float ifx = 1.0f / $K.fx;
         float ify = 1.0f / $K.fy;
         float itx = -$K.tx / $K.fx;
         float ity = -$K.ty / $K.fy;
 
-        for (int i = 0; i < $frameHeight; i++)
-            for ( int j = 0; j < $frameWidth; j++ )
+        bool needToInterpolate = $rgbWidth != $depthWidth || $rgbHeight != $depthHeight;
+
+        float invRGBWidth = 1.0f / $rgbWidth;
+        float invRGBHeight = 1.0f / $rgbHeight;
+
+        const float* depthDataPtr = (float*) $depthFrame.data();
+
+        for (int i = 0; i < $rgbHeight; i++)
+            for ( int j = 0; j < $rgbWidth; j++ )
             {
-                int idx = $frameWidth * i + j;
+                int idx = $rgbWidth * i + j;
                 int posBuffIdx = numComponentsPerPointPosition * idx;
-                const float currDepth = ((float*)$depthFrame.data())[ idx ];
+                float depthX = invRGBWidth * $depthWidth * j;
+                float depthY = invRGBHeight * $depthHeight * i;
+                const float currDepth = needToInterpolate ? InterpolateDepth(depthDataPtr, depthX, depthY, $depthWidth, $depthHeight) : depthDataPtr[ idx ];
 
                 positionsBuffer[ posBuffIdx + 0 ] =  (ifx * j + itx) * currDepth;
                 positionsBuffer[ posBuffIdx + 1 ] = -(ify * i + ity) * currDepth;
@@ -79,10 +118,10 @@ bool StartStreaming(Record3DDevice $deviceHandle, OnNewFrameCallback $newFrameCa
 		FrameInfo conf;
 		conf.depthFrameBufferPtr = (void*)positionsBuffer;
 		conf.rgbFrameBufferPtr = (void*)$rgbFrame.data();
-		conf.depthFrameBufferSize = static_cast<int32_t>($frameWidth * $frameHeight * sizeof(float));
-		conf.rgbFrameBufferSize = static_cast<int32_t>($frameWidth * $frameHeight * numRGBChannels * sizeof(uint8_t));
-		conf.frameWidth = static_cast<int32_t>($frameWidth);
-		conf.frameHeight = static_cast<int32_t>($frameHeight);
+		conf.depthFrameBufferSize = static_cast<int32_t>($depthWidth * $depthHeight * sizeof(float) * 4);
+		conf.rgbFrameBufferSize = static_cast<int32_t>($rgbWidth * $rgbHeight * numRGBChannels * sizeof(uint8_t));
+		conf.frameWidth = static_cast<int32_t>($rgbWidth);
+		conf.frameHeight = static_cast<int32_t>($rgbHeight);
 
         $newFrameCallback(conf);
     };

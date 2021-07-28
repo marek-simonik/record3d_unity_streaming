@@ -26,8 +26,6 @@ extern "C"
 
     struct FrameMetadata
     {
-        int32_t width;
-        int32_t height;
         int32_t numComponentsPerPositionTexturePixel;
         int32_t numComponentsPerColorTexturePixel;
     };

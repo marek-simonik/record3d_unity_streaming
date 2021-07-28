@@ -1,5 +1,6 @@
 # Record3D-Unity bridging library
 
+**2021/07/28 Update**: Now supporting higher-quality LiDAR RGB streaming. **Updated for Record3D 1.6 and newer.**
 **2020/09/17 Update**: Introduced LiDAR support
 
 This library connects [Record3D](https://record3d.app)'s live-streaming library [`record3d_cpp`](https://github.com/marek-simonik/record3d) with [Unity demo project](https://github.com/marek-simonik/record3d_unity_demo). The goal of this library is to transform stream of RGBD video into Point Clouds that can be fed into Unity VFX Graph as attribute maps (textures).
@@ -9,7 +10,7 @@ Building on Windows is quite cumbersome, which is why I am including pre-built l
 
 ##### Pre-built library (the recommended, pain-free way)
 
-The library consists the following file, which you can download: [`record3d_unity_streaming.dll`](https://github.com/marek-simonik/record3d_unity_streaming/releases/download/v1.2.0/record3d_unity_streaming.dll). You will need to make sure it is in `PATH`. The easiest way is to copy the file into `C:\Windows\System32` and/or `C:\Windows\SysWOW64`. Alternatively, you can add the the folder containing the `.dll` into `PATH`.
+The library consists the following file, which you can download: [`record3d_unity_streaming.dll`](https://github.com/marek-simonik/record3d_unity_streaming/releases/download/v1.3.0/record3d_unity_streaming.dll). You will need to make sure it is in `PATH`. The easiest way is to copy the file into `C:\Windows\System32` and/or `C:\Windows\SysWOW64`. Alternatively, you can add the folder containing the `.dll` into `PATH`.
 
 ##### Building the library yourself (the hard way)
 
@@ -61,7 +62,7 @@ You can now open the [Unity demo project](https://github.com/marek-simonik/recor
 #### Building on macOS/Linux
 
 ##### Pre-built library for macOS
-Similar to Windows, only one `dylib` file is needed: [`librecord3d_unity_streaming.dylib`](https://github.com/marek-simonik/record3d_unity_streaming/releases/download/v1.2.0/librecord3d_unity_streaming.dylib). Copy the `.dylib` file into `/usr/local/lib/`.
+Similar to Windows, only one `dylib` file is needed: [`librecord3d_unity_streaming.dylib`](https://github.com/marek-simonik/record3d_unity_streaming/releases/download/v1.3.0/librecord3d_unity_streaming.dylib). Copy the `.dylib` file into `/usr/local/lib/`.
 
 
 ##### Building the library yourself
