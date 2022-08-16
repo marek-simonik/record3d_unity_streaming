@@ -72,7 +72,8 @@ bool StartStreaming(Record3DDevice $deviceHandle, OnNewFrameCallback $newFrameCa
                              uint32_t $depthWidth,
                              uint32_t $depthHeight,
                              Record3D::DeviceType $deviceType,
-                             Record3D::IntrinsicMatrixCoeffs $K) mutable
+                             Record3D::IntrinsicMatrixCoeffs $K,
+                             Record3D::CameraPose $cameraPose ) mutable
     {
         size_t currPositionsBufferSize = $rgbWidth * $rgbHeight * numComponentsPerPointPosition;
         if ( positionsBufferSize < currPositionsBufferSize )
