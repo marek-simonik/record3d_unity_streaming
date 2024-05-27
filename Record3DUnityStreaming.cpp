@@ -67,10 +67,14 @@ bool StartStreaming(Record3DDevice $deviceHandle, OnNewFrameCallback $newFrameCa
 
     stream->onNewFrame = [=](const Record3D::BufferRGB &$rgbFrame,
                              const Record3D::BufferDepth &$depthFrame,
-                             uint32_t $rgbWidth,
-                             uint32_t $rgbHeight,
-                             uint32_t $depthWidth,
-                             uint32_t $depthHeight,
+                             const Record3D::BufferConfidence &$confFrame,
+                             const Record3D::BufferMisc &$miscData,
+                             uint32_t   $rgbWidth,
+                             uint32_t   $rgbHeight,
+                             uint32_t   $depthWidth,
+                             uint32_t   $depthHeight,
+                             uint32_t   $confWidth,
+                             uint32_t   $confHeight,
                              Record3D::DeviceType $deviceType,
                              Record3D::IntrinsicMatrixCoeffs $K,
                              Record3D::CameraPose $cameraPose ) mutable
