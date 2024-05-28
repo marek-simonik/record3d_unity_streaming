@@ -15,7 +15,7 @@ Building on Windows is quite cumbersome, which is why I am including pre-built l
 
 ##### Pre-built library (the recommended, pain-free way)
 
-The library consists the following file, which you can download: [`record3d_unity_streaming.dll`](https://github.com/marek-simonik/record3d_unity_streaming/releases/download/v1.4/record3d_unity_streaming.dll).
+The library consists the following file, which you can download: [`record3d_unity_streaming.dll`](https://github.com/marek-simonik/record3d_unity_streaming/releases/download/v1.4.0/record3d_unity_streaming.dll).
 
 This library should be copied into [`record3d_unity_demo/Assets/Scripts`](https://github.com/marek-simonik/record3d_unity_demo/tree/master/Assets/Scripts). The demo [`record3d_unity_demo`](https://github.com/marek-simonik/record3d_unity_demo/) does already have this `dll` included, so you don't need to take any further action if you use the demo on Windows. 
 
@@ -69,7 +69,7 @@ You can now open the [Unity demo project](https://github.com/marek-simonik/recor
 #### Building on macOS/Linux
 
 ##### Pre-built library for macOS
-Similar to Windows, only one `dylib` file is needed: [`librecord3d_unity_streaming.dylib`](https://github.com/marek-simonik/record3d_unity_streaming/releases/download/v1.4/librecord3d_unity_streaming.dylib). Copy the `.dylib` file into `/usr/local/lib/`. If there is no `/usr/local/lib/` folder on your disk, then create it.
+Similar to Windows, only one `dylib` file is needed: [`librecord3d_unity_streaming.dylib`](https://github.com/marek-simonik/record3d_unity_streaming/releases/download/v1.4.0/librecord3d_unity_streaming.dylib). Copy the `.dylib` file into `/usr/local/lib/`. If there is no `/usr/local/lib/` folder on your disk, then create it.
 
 
 ##### Building the library yourself
