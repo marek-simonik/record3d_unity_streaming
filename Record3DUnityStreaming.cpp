@@ -3,6 +3,9 @@
 #include <record3d/Record3DStructs.h>
 #include <record3d/Record3DStream.h>
 #include <cmath>
+#include <map>
+
+std::map<int32_t, Record3D::Record3DStream*> streams;
 
 
 FrameMetadata GetFrameMetadata()
@@ -60,6 +63,8 @@ static float InterpolateDepth(const float* $depthData, float $x, float $y, int $
 bool StartStreaming(Record3DDevice $deviceHandle, OnNewFrameCallback $newFrameCallback, OnStreamStoppedCallback $streamStoppedCallback)
 {
     auto* stream = new Record3D::Record3DStream{};
+    streams[$deviceHandle.handle] = stream;
+    
     constexpr int numComponentsPerPointPosition = 4;
 
     size_t positionsBufferSize = 0;
@@ -144,4 +149,17 @@ bool StartStreaming(Record3DDevice $deviceHandle, OnNewFrameCallback $newFrameCa
 
     bool connectionEstablished = stream->ConnectToDevice(dev);
     return connectionEstablished;
+}
+
+void StopStreaming(Record3DDevice $deviceHandle)
+{
+    if (streams.count($deviceHandle.handle) > 0)
+    {
+        Record3D::Record3DStream* stream = streams[$deviceHandle.handle];
+
+        if (stream != NULL)
+        {
+            stream->Disconnect();
+        }
+    }
 }
