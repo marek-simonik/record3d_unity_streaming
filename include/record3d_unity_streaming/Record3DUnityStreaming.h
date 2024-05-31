@@ -53,6 +53,7 @@ extern "C"
     typedef void (*OnNewFrameCallback)(FrameInfo);
     typedef void (*OnStreamStoppedCallback)();
 	EXPORT_DLL bool StartStreaming(Record3DDevice $deviceHandle, OnNewFrameCallback $newFrameCallback, OnStreamStoppedCallback $streamStoppedCallback);
+    EXPORT_DLL void StopStreaming(Record3DDevice $deviceHandle);
 
 #ifdef __cplusplus
 }
